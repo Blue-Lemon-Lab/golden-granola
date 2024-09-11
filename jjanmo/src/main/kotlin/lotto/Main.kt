@@ -46,13 +46,20 @@ class LottoDayCalculator {
 
 
 fun main() {
-    val calculator = LottoDayCalculator()
-    val lottoNumbers = calculator.generateLottoNumber().joinToString(" ")
+    while (true) {
+        val calculator = LottoDayCalculator()
+        val lottoNumbers = calculator.generateLottoNumber().joinToString(" ")
 
-    val lottoDay = calculator.getLottoDayOfThisWeek()
-    val timeLeft = calculator.formatter(calculator.getDiffFromLottoDay(lottoDay))
+        val lottoDay = calculator.getLottoDayOfThisWeek()
+        val timeLeft = calculator.formatter(calculator.getDiffFromLottoDay(lottoDay))
 
-    println("반드시 당첨될 로또 번호 : $lottoNumbers")
-    println(timeLeft)
-    println("아무 때나 오지 않는 일확천금의 기회, 지금 당장 출발하세요. 😼")
+        println("반드시 당첨될 로또 번호 : $lottoNumbers")
+        println(timeLeft)
+        println("아무 때나 오지 않는 일확천금의 기회, 지금 당장 출발하세요. 😼")
+        println()
+
+        println("한 번 더 뽑아보실??(y/n)")
+        val value = readln().trim()
+        if (value == "n") return
+    }
 }
