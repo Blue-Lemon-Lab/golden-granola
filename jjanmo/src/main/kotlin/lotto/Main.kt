@@ -42,20 +42,43 @@ class LottoDayCalculator {
         if (hours == 0L) return "로또를 뽑을 수 있는 시간은 앞으로 ${minutes}분 남았습니다."
         return "로또를 뽑을 수 있는 시간은 앞으로 ${days}일 ${hours}시간 ${minutes}분 남았습니다."
     }
+
+    fun getLottoWinningProbability(lottoNumbers: List<Int>): String {
+        var probability = lottoNumbers.joinToString("").toLong()
+        while (probability > 100) {
+            probability %= 77
+        }
+
+        return when {
+            probability >= 90 -> "🎉 대박! 당신의 확률은 ${probability}%에요! 로또의 신이 당신을 응원하고 있어요! 🌟💖"
+            probability >= 80 -> "😄 훌륭해요! 당신의 확률은 ${probability}%에요! 행운이 당신의 편이에요! ✨🍀"
+            probability >= 70 -> "🎈 멋져요! 당신의 확률은 ${probability}%에요! 계속 힘내세요, 좋은 일이 일어날 거예요! 🌟😃"
+            probability >= 60 -> "🌟 좋습니다! 당신의 확률은 ${probability}%에요! 운이 따를 거예요, 조금만 더 힘내세요! 💪🏻🍀"
+            probability >= 50 -> "👍🏻 괜찮아요! 당신의 확률은 ${probability}%에요! 반반의 확률이지만, 긍정적인 마음으로 도전하세요! 🌈"
+            probability >= 40 -> "💖 아직 희망이 있어요! 당신의 확률은 ${probability}%에요. 희망을 잃지 말고 계속 응원할게요! 🌟😉"
+            probability >= 30 -> "💪🏻 그래도 괜찮아요! 당신의 확률은 ${probability}%에요. 작은 기적을 믿어보세요! ✨😄"
+            probability >= 20 -> "💖 괜찮아요! 당신의 확률은 ${probability}%에요. 노력은 결코 헛되지 않아요! 응원할게요! 🚀🍀"
+            probability >= 10 -> "💫 포기하지 마세요! 당신의 확률은 ${probability}%에요. 작은 기적이 일어날 수 있어요! 화이팅! 🙏🏻💪🏻"
+            else -> "희망은 항상 있어요! 당신의 확률은 ${probability}%에요. 믿음과 응원으로 큰 기적을 만들어보세요! "
+
+        }
+    }
 }
 
 
 fun main() {
     while (true) {
         val calculator = LottoDayCalculator()
-        val lottoNumbers = calculator.generateLottoNumber().joinToString(" ")
+        val lottoNumbers = calculator.generateLottoNumber()
 
         val lottoDay = calculator.getLottoDayOfThisWeek()
         val timeLeft = calculator.formatter(calculator.getDiffFromLottoDay(lottoDay))
+        val probabilityMessage = calculator.getLottoWinningProbability(lottoNumbers)
 
-        println("반드시 당첨될 로또 번호 : $lottoNumbers")
+        println("반드시 당첨될 로또 번호 : ${lottoNumbers.joinToString(" ")}")
         println(timeLeft)
-        println("아무 때나 오지 않는 일확천금의 기회, 지금 당장 출발하세요. 😼")
+        println()
+        println(probabilityMessage)
         println()
 
         println("한 번 더 뽑아보실??(y/n)")
