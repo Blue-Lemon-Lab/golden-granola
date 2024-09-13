@@ -4,24 +4,17 @@ import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlin.random.Random
 
 class LottoDayCalculator {
     fun generateLottoNumber(): List<Int> {
-        val lotto = mutableListOf<Int>()
-        while (lotto.size < 6) {
-            val newNumber = Random.nextInt(1, 45)
-            if (!lotto.contains(newNumber)) {
-                lotto.add(newNumber)
-            }
-        }
-        return lotto
+        val numbers: List<Int> = (1..45).toList()
+        return numbers.shuffled().take(6)
     }
 
     fun getLottoDayOfThisWeek(): LocalDateTime {
         val today = LocalDate.now()
         val diff = DayOfWeek.SATURDAY.value - today.dayOfWeek.value
-        val lottoDay = today.plusDays((diff.toLong())).atTime(20, 0) // 이번주 토요일 8시
+        val lottoDay = today.plusDays(diff.toLong()).atTime(20, 0) // 이번주 토요일 8시
         return lottoDay
     }
 
@@ -37,10 +30,11 @@ class LottoDayCalculator {
 
     fun formatter(timeData: Triple<Long, Long, Long>): String {
         val (days, hours, minutes) = timeData
-
-        if (days == 0L) return "로또를 뽑을 수 있는 시간은 앞으로 ${hours}시간 ${minutes}분 남았습니다."
-        if (hours == 0L) return "로또를 뽑을 수 있는 시간은 앞으로 ${minutes}분 남았습니다."
-        return "로또를 뽑을 수 있는 시간은 앞으로 ${days}일 ${hours}시간 ${minutes}분 남았습니다."
+        return when {
+            days == 0L && hours == 0L -> "로또를 뽑을 수 있는 시간은 앞으로 ${minutes}분 남았습니다."
+            days == 0L -> "로또를 뽑을 수 있는 시간은 앞으로 ${hours}시간 ${minutes}분 남았습니다."
+            else -> "로또를 뽑을 수 있는 시간은 앞으로 ${days}일 ${hours}시간 ${minutes}분 남았습니다."
+        }
     }
 
     fun getLottoWinningProbability(lottoNumbers: List<Int>): String {
@@ -67,16 +61,16 @@ class LottoDayCalculator {
 
 
 fun main() {
-    while (true) {
-        val calculator = LottoDayCalculator()
-        val lottoNumbers = calculator.generateLottoNumber()
+    val calculator = LottoDayCalculator()
 
+    while (true) {
+        val lottoNumbers = calculator.generateLottoNumber()
         val lottoDay = calculator.getLottoDayOfThisWeek()
-        val timeLeft = calculator.formatter(calculator.getDiffFromLottoDay(lottoDay))
+        val timeLeftMessage = calculator.formatter(calculator.getDiffFromLottoDay(lottoDay))
         val probabilityMessage = calculator.getLottoWinningProbability(lottoNumbers)
 
         println("반드시 당첨될 로또 번호 : ${lottoNumbers.joinToString(" ")}")
-        println(timeLeft)
+        println(timeLeftMessage)
         println()
         println(probabilityMessage)
         println()
