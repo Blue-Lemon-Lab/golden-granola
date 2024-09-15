@@ -2,8 +2,9 @@ package lotto
 
 import java.time.DayOfWeek
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.temporal.TemporalAdjusters
 
 class LottoDayCalculator {
     fun generateLottoNumber(): List<Int> {
@@ -11,11 +12,12 @@ class LottoDayCalculator {
         return numbers.shuffled().take(6)
     }
 
-    fun getLottoDayOfThisWeek(): LocalDateTime {
-        val today = LocalDate.now()
-        val diff = DayOfWeek.SATURDAY.value - today.dayOfWeek.value
-        val lottoDay = today.plusDays(diff.toLong()).atTime(20, 0) // 이번주 토요일 8시
-        return lottoDay
+    fun getTargetLottoDay(): LocalDateTime {
+        val currentDate = LocalDateTime.now()
+        val thisSaturday = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).with(LocalTime.of(20, 30))
+
+        return if (currentDate.isBefore(thisSaturday)) thisSaturday
+        else thisSaturday.plusWeeks(1)
     }
 
     fun getDiffFromLottoDay(lottoDay: LocalDateTime): Triple<Long, Long, Long> {
@@ -65,7 +67,7 @@ fun main() {
 
     while (true) {
         val lottoNumbers = calculator.generateLottoNumber()
-        val lottoDay = calculator.getLottoDayOfThisWeek()
+        val lottoDay = calculator.getTargetLottoDay()
         val timeLeftMessage = calculator.formatter(calculator.getDiffFromLottoDay(lottoDay))
         val probabilityMessage = calculator.getLottoWinningProbability(lottoNumbers)
 
