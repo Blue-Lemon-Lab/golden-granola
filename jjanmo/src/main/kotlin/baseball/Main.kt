@@ -2,7 +2,7 @@ package baseball
 
 data class GameResult(val strike: Int, val ball: Int, val out: Int, val inputNumbers: List<Int>)
 
-class Baseball(private val total: Int = 3) {
+class BaseballGame(private val total: Int = 3) {
     private val generatedNumbers: List<Int> = (0..9).toList().shuffled().slice(0 until total)
     var inning: Int = 0
     val records: MutableList<Map<String, GameResult>> = mutableListOf()
@@ -57,7 +57,7 @@ fun askToContinue(strike: Int): Boolean {
 
 
 fun main() {
-    val game = Baseball()
+    val game = BaseballGame()
     var isStarted = true
 
     while (isStarted && game.inning < 10) {
