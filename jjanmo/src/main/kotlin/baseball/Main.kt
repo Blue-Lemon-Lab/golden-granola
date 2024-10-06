@@ -1,5 +1,7 @@
 package baseball
 
+const val LAST_INNING = 9
+
 data class GameResult(val strike: Int, val ball: Int, val out: Int, val inputNumbers: List<Int>)
 
 class BaseballGame(private val total: Int = 3) {
@@ -60,7 +62,7 @@ fun main() {
     val game = BaseballGame()
     var isStarted = true
 
-    while (isStarted && game.inning < 10) {
+    while (isStarted && game.inning < LAST_INNING) {
         println("0 ~ 9 사이의 숫자를 입력하세요.")
         if (game.inning == 0) println("입력방법 : [숫자1 숫자2 숫자3] ← 숫자사이 공백 필수")
 
@@ -71,7 +73,7 @@ fun main() {
             game.printRecord(index + 1, record)
         }
 
-        if (game.inning == 9) return println("경기를 종료합니다.")
+        if (game.inning == LAST_INNING) println("모든 이닝이 끝나서 경기를 종료합니다.")
         else {
             val currentInningStrike = game.records.last()["${game.inning}이닝"]?.strike ?: 0
             isStarted = askToContinue(currentInningStrike)
