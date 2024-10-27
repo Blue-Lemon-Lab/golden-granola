@@ -3,7 +3,7 @@ package hangman
 import kotlinx.coroutines.runBlocking
 
 data class Result(
-    val content: Char,
+    val character: Char,
     val isRight: Boolean,
 )
 
@@ -19,7 +19,7 @@ class Hangman(private val word: String) {
     fun checkResults(input: Char): String {
         val prevRightCount = results.filter { it.isRight }.size // 이전 글자 맞춘 개수
         results = results.map {
-            if (it.content == input.lowercaseChar()) {
+            if (it.character == input.lowercaseChar()) {
                 Result(input, true)
             } else it
         }
@@ -35,7 +35,7 @@ class Hangman(private val word: String) {
     fun displayResults() {
         print("WORD :")
         results.map {
-            print(if (it.isRight) " ${it.content}" else " ⎽")
+            print(if (it.isRight) " ${it.character}" else " ⎽")
         }
         println() // 한 줄 띄어쓰기
     }
@@ -134,7 +134,6 @@ fun main() {
     val word = runBlocking {
         APIClient.fetchWord(numberOfWord.toInt())
     }
-    println(word)
 
     val game = Hangman(word)
 
