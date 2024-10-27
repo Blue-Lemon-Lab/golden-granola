@@ -10,15 +10,16 @@ import java.net.URI
 object APIClient {
     private val jsonParser = Json { ignoreUnknownKeys = true }
 
-    suspend fun fetchWord(length: Number = 5): String = withContext(Dispatchers.IO) {
-        val url : URL = URI("https://random-word-api.herokuapp.com/word?length=$length").toURL()
+    suspend fun fetchWord(length: Int = 5): String = withContext(Dispatchers.IO) {
+        val url : URL = URI("https://random-word.ryanrk.com/api/en/word/random?length=$length").toURL()
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
 
         return@withContext if (connection.responseCode == HttpURLConnection.HTTP_OK) {
             val response = connection.inputStream.bufferedReader().use { it.readText() }
             val parsed: List<String> = jsonParser.decodeFromString(response)
-            parsed.first()
+            print(parsed)
+            parsed.first().lowercase()
         } else {
             "Error: ${connection.responseCode}"
         }
