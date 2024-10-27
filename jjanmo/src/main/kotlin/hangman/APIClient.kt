@@ -1,15 +1,24 @@
+package hangman
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URI
 
 object APIClient {
-    suspend fun fetchWord(length:Number = 5): String {
-        // 메인 스레드에서 API 호출 (비동기 방식 아님)
-        val url = URL("https://random-word-api.herokuapp.com/word?length=$length")
+    private val jsonParser = Json { ignoreUnknownKeys = true }
+
+    suspend fun fetchWord(length: Number = 5): String = withContext(Dispatchers.IO) {
+        val url : URL = URI("https://random-word-api.herokuapp.com/word?length=$length").toURL()
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
 
-        return if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            connection.inputStream.bufferedReader().use { it.readText() }
+        return@withContext if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+            val response = connection.inputStream.bufferedReader().use { it.readText() }
+            val parsed: List<String> = jsonParser.decodeFromString(response)
+            parsed.first()
         } else {
             "Error: ${connection.responseCode}"
         }
