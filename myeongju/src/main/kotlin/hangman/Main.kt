@@ -1,4 +1,23 @@
-class HangmanGame(private val word: String) {
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import java.net.HttpURLConnection
+import java.net.URL
+
+@Serializable
+data class WordResponse(val word: String, val category: String)
+
+fun fetchRandomWord(): WordResponse {
+    val url = URL("https://www.wordgamedb.com/api/v1/words/random")
+    with(url.openConnection() as HttpURLConnection) {
+        requestMethod = "GET"
+
+        val response = inputStream.bufferedReader().use { it.readText() }
+        val json = Json { ignoreUnknownKeys = true }
+        return json.decodeFromString(response)
+    }
+}
+
+class HangmanGame(private val word: String, private val category: String) {
     private val hangmanPics = listOf(
         """
           +---+
@@ -64,6 +83,7 @@ class HangmanGame(private val word: String) {
 
     fun play() {
         while (remainingLives > 0) {
+            println("[[[ Category: $category ]]]")
             println(hangmanPics[hangmanPics.size - 1 - remainingLives])
             println("\n단어: " + word.map { if (it in guessedLetters) it else '_' }.joinToString(" "))
 
@@ -114,9 +134,10 @@ class HangmanGame(private val word: String) {
     }
 }
 
+
+
 fun main() {
-    // 단어 받는 쪽 수정
-    val words = listOf("apple", "banana", "orange")
-    val game = HangmanGame(words.random())
+    val wordResponse = fetchRandomWord()
+    val game = HangmanGame(wordResponse.word, wordResponse.category)
     game.play()
 }
