@@ -39,7 +39,7 @@ class HangmanGame(private val wordApiClient: WordApiClient) {
     }
 
     private fun setupNewGame() {
-        println("\n난이를 선택해라. (easy/normal/hard):")
+        println("\n난이도를 선택해라. (easy/normal/hard):")
         val difficulty = getDifficultyFromUser()
         currentWord = wordApiClient.getRandomWord(difficulty.wordLength).lowercase()
         guessedLetters = mutableSetOf()
