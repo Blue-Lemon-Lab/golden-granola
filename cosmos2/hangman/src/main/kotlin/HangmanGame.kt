@@ -87,10 +87,10 @@ class HangmanGame(private val wordApiClient: WordApiClient) {
 
         if (guess !in currentWord) {
             println("틀렸어!")
+            lifeCounts--
         } else {
             println("잘했군 맞았어!")
         }
-        lifeCounts--
     }
 
     private fun isWordGuessed(): Boolean {
