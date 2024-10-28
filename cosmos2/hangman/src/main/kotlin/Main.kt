@@ -1,4 +1,3 @@
-// WordApiClient.kt
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.OkHttpClient
@@ -21,10 +20,6 @@ class WordApiClient {
     }
 }
 
-// HangmanGame.kt
-
-
-// Main.kt
 fun main() {
     val wordApiClient = WordApiClient()
     val game = HangmanGame(wordApiClient)
