@@ -17,6 +17,9 @@ class Hangman(private val word: String) {
     val isGameCompleted: Boolean get() = results.filter { it.isRight }.size == word.length
 
     fun checkResults(input: Char): String {
+        val alreadyGuessedCount = results.filter { it.isRight && it.character == input }.size
+        if(alreadyGuessedCount > 0) return "alreadyGuessed"
+
         val prevRightCount = results.filter { it.isRight }.size // 이전 글자 맞춘 개수
         results = results.map {
             if (it.character == input.lowercaseChar()) {
@@ -146,7 +149,11 @@ fun main() {
 
         val inputResult = game.checkResults(inputCharacter[0])
         if(inputResult == "correct") println("와우 👍🏻")
-        else println("땡 😵")
+        else if(inputResult == "wrong") println("땡 😵")
+        else {
+            println("이미 선택한 글자입니다. 🥲")
+            continue
+        }
 
         game.displayResults()
         game.drawHangMan()
